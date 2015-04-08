@@ -1,5 +1,6 @@
 package pl.reader.environment;
 
+import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -40,6 +41,30 @@ public class Cluster {
 		
 	}
 	
+	public void initSlaves(File...f){
+		for(int i=0;i<slaveNumber;i++){
+			slavesC[i].init(f[i]);
+		}
+	}
+	
+	public void startComputers(){
+		master.start();
+		
+		for(int i=0;i<slaveNumber;i++){
+			slaves[i].start();
+		}
+	}
+	
 	//private
+	
+	public static void main(String[] args){
+		File f = new File("D:\\tmp.txt");
+		
+		Cluster cluster = new Cluster(1);
+		cluster.initSlaves(f);
+		cluster.startComputers();
+		
+		
+	}
 
 }

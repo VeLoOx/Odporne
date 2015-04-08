@@ -3,6 +3,7 @@ package pl.reader.environment.master;
 import java.util.concurrent.BlockingQueue;
 
 import pl.reader.environment.Computer;
+import pl.reader.textreader.CharacterCounterMessage;
 
 
 public class MasterComputer extends Computer {
@@ -23,10 +24,27 @@ public class MasterComputer extends Computer {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void init(){}
+	public void init(){
+		
+	}
 
 	@Override
 	public void run() {
+		System.out.println(name+" started");
+		try {
+			
+			while(true){
+			Thread.sleep(sleepTime);
+			CharacterCounterMessage ccm = myQueue.take();
+			System.out.println(ccm.toString());
+			}
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		// TODO Auto-generated method stub
 		
 	}

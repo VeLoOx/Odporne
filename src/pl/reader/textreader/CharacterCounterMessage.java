@@ -32,6 +32,10 @@ public class CharacterCounterMessage {
 		this.counter = counter;
 	}
 	
+	public MessageStatus getStatus() {
+		return status;
+	}
+
 	public String toString(){
 		String text="";
 		for(int i=0;i<counter.length;i++){

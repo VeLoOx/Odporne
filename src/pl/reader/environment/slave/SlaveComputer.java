@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 import pl.reader.environment.Computer;
+import pl.reader.textreader.CharacterCounterMessage;
+import pl.reader.textreader.MessageStatus;
 import pl.reader.textreader.TextReader;
 
 public class SlaveComputer extends Computer {
 	
 	//private long time;
-	private boolean running=false;
+	private boolean running=true;
 	private TextReader textReader = null;
 	private File textFile;
 	//private int loopCounter = 0;
@@ -44,6 +46,24 @@ public class SlaveComputer extends Computer {
 	}
 
 	public void run() {
+		System.out.println(name+" started");
+		while(running){
+		
+		CharacterCounterMessage ccm = textReader.readNextLine();
+		if(ccm.getStatus()==MessageStatus.LAST){
+			running=false;
+			//return;
+		}
+		try {
+			myQueue.put(ccm);
+			Thread.sleep(sleepTime);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+		
+		
 		// TODO Auto-generated method stub
 		/*time = System.currentTimeMillis();
 		running = true;
