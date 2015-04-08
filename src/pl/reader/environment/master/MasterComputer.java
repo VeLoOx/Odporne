@@ -1,10 +1,39 @@
-package pl.reader.master;
+package pl.reader.environment.master;
 
-import pl.reader.slave.SlaveComputer;
+import java.util.concurrent.BlockingQueue;
 
-public class MasterComputer {
+import pl.reader.environment.Computer;
+
+
+public class MasterComputer extends Computer {
+
 	
-	public static void main(String[] args){
+	
+	
+	
+	public MasterComputer(BlockingQueue queue, String n) {
+		super(queue, n);
+		type="MasterComputer";
+		// TODO Auto-generated constructor stub
+	}
+
+	public MasterComputer(BlockingQueue queue) {
+		super(queue);
+		type="MasterComputer";
+		// TODO Auto-generated constructor stub
+	}
+	
+	public void init(){}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
+	/*public static void main(String[] args){
 		
 		SlaveComputer a = new SlaveComputer("A");
 		SlaveComputer b =  new SlaveComputer("B");
@@ -50,6 +79,6 @@ public class MasterComputer {
 			}
 		}
 		
-	}
+	}*/
 
 }
