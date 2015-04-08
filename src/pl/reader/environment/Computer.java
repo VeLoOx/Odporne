@@ -9,7 +9,7 @@ public abstract class Computer implements Runnable {
 	
 	protected String name;
 	protected String type;
-	protected long sleepTime;
+	protected long sleepTime = 500;
 	
 	protected BlockingQueue<CharacterCounterMessage> myQueue;
 	
@@ -35,6 +35,12 @@ public abstract class Computer implements Runnable {
 	}
 	public BlockingQueue<CharacterCounterMessage> getMyQueue() {
 		return myQueue;
+	}
+	public long getSleepTime() {
+		return sleepTime;
+	}
+	public void setSleepTime(long sleepTime) {
+		this.sleepTime = sleepTime;
 	}
 	
 	
