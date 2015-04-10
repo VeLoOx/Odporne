@@ -12,8 +12,8 @@ public class Cluster {
 	
 	int slaveNumber = 4;
 	
-	private Thread master;
-	private Thread[] slaves;
+	private Thread masterThread;
+	private Thread[] slavesThreads;
 	
 	private Computer masterC;
 	private Computer[] slavesC;
@@ -27,16 +27,16 @@ public class Cluster {
 	public Cluster(int slaveNuber){
 		this.slaveNumber = slaveNuber;
 		messageQueue = new ArrayBlockingQueue<>(2048);
-		slaves = new Thread[slaveNumber];
+		slavesThreads = new Thread[slaveNumber];
 		slavesC = new SlaveComputer[slaveNumber];
 		
-		masterC = new MasterComputer(messageQueue, "MASTER_COMPUTER");
-		master = new Thread(masterC);
+		masterC = new MasterComputer(messageQueue, "MASTER_COMPUTER",slaveNumber);
+		masterThread = new Thread(masterC);
 		
 		//initialization slaves
 		for(int i=0;i<slaveNumber;i++){
-			slavesC[i] = new SlaveComputer(messageQueue, "SLAVE_COMPUTER No "+i);
-			slaves[i] = new Thread(slavesC[i]);
+			slavesC[i] = new SlaveComputer(messageQueue, "SLAVE_COMPUTER No. "+i);
+			slavesThreads[i] = new Thread(slavesC[i]);
 		}
 		
 	}
@@ -48,20 +48,24 @@ public class Cluster {
 	}
 	
 	public void startComputers(){
-		master.start();
-		
+		masterThread.start();
 		for(int i=0;i<slaveNumber;i++){
-			slaves[i].start();
+			slavesThreads[i].start();
 		}
 	}
 	
 	//private
 	
 	public static void main(String[] args){
-		File f = new File("D:\\tmp.txt");
+		File [] files = new File[1];
+		File f = new File("D:\\tmp1.txt");
+		files[0]=new File("D:\\tmp1.txt");
+		/*files[1]=new File("D:\\tmp2.txt");
+		files[2]=new File("D:\\tmp3.txt");
+		files[3]=new File("D:\\tmp4.txt");*/
 		
 		Cluster cluster = new Cluster(1);
-		cluster.initSlaves(f);
+		cluster.initSlaves(files);
 		cluster.startComputers();
 		
 		

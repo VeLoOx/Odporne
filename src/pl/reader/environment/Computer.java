@@ -9,7 +9,7 @@ public abstract class Computer implements Runnable {
 	
 	protected String name;
 	protected String type;
-	protected long sleepTime = 2000;
+	protected long sleepTime = 1000;
 	
 	protected BlockingQueue<CharacterCounterMessage> myQueue;
 	

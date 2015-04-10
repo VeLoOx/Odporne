@@ -67,11 +67,19 @@ public class TextReader {
 			e.printStackTrace();
 		}
 		
-		CharacterCounterMessage mess = tr.readNextLine();
+		CharacterCounterMessage mess;// = tr.readNextLine();
+		/*System.out.println(mess.toString());
+		
+		mess = tr.readNextLine();
 		System.out.println(mess.toString());
 		
 		mess = tr.readNextLine();
 		System.out.println(mess.toString());
+		*/
+		while(!tr.lastLine){
+			mess = tr.readNextLine();
+			System.out.println(mess.toString());
+		}
 		
 		
 		
