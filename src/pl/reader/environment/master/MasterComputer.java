@@ -1,15 +1,20 @@
 package pl.reader.environment.master;
 
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 import pl.reader.environment.Computer;
 import pl.reader.textreader.CharacterCounterMessage;
 import pl.reader.textreader.MessageStatus;
+import pl.reader.utils.CrcClient;
 
 public class MasterComputer extends Computer {
 
 	private int slaveNumber;
 	private boolean running = true;
+	private CrcClient crcC= new CrcClient();
+	//int[] data1={5};
+	//int crcTest;
 
 	public MasterComputer(BlockingQueue queue, String n) {
 		super(queue, n);
@@ -38,6 +43,15 @@ public class MasterComputer extends Computer {
 	public void run() {
 		System.out.println(name + " started");
 		int slaveFinished = 0;
+		
+/*		try {
+			crcTest=crcC.getCrc16(data1);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println("Wartoœc crcTest "+Integer.toHexString(crcTest));*/
+		
 		try {
 
 			while (running) {
@@ -48,6 +62,8 @@ public class MasterComputer extends Computer {
 				if (slaveFinished == slaveNumber)
 					running = false;
 				System.out.println(ccm.toString());
+				System.out.println("CRC: "+ccm.getCrcCode());
+				System.out.println("=======================");
 			}
 
 		} catch (InterruptedException e) {

@@ -57,14 +57,14 @@ public class Cluster {
 	//private
 	
 	public static void main(String[] args){
-		File [] files = new File[1];
+		File [] files = new File[4];
 		File f = new File("D:\\tmp1.txt");
 		files[0]=new File("D:\\tmp1.txt");
-		/*files[1]=new File("D:\\tmp2.txt");
+		files[1]=new File("D:\\tmp2.txt");
 		files[2]=new File("D:\\tmp3.txt");
-		files[3]=new File("D:\\tmp4.txt");*/
+		files[3]=new File("D:\\tmp4.txt");
 		
-		Cluster cluster = new Cluster(1);
+		Cluster cluster = new Cluster(4);
 		cluster.initSlaves(files);
 		cluster.startComputers();
 		

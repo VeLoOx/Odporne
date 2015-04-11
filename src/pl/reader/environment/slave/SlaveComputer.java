@@ -8,6 +8,7 @@ import pl.reader.environment.Computer;
 import pl.reader.textreader.CharacterCounterMessage;
 import pl.reader.textreader.MessageStatus;
 import pl.reader.textreader.TextReader;
+import pl.reader.utils.CrcClient;
 
 public class SlaveComputer extends Computer {
 	
@@ -16,6 +17,7 @@ public class SlaveComputer extends Computer {
 	private TextReader textReader = null;
 	private File textFile;
 	//private int loopCounter = 0;
+	private CrcClient crcC= new CrcClient();
 	
 	
 	public SlaveComputer(BlockingQueue queue, String n) {
@@ -55,9 +57,10 @@ public class SlaveComputer extends Computer {
 			//return;
 		}
 		try {
+			ccm.setCrcCode(crcC.getCrc16(ccm.getCounter()));
 			myQueue.put(ccm);
 			Thread.sleep(sleepTime);
-		} catch (InterruptedException e) {
+		} catch (InterruptedException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

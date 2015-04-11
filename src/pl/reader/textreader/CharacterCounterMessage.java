@@ -7,6 +7,8 @@ public class CharacterCounterMessage {
 	
 	private MessageStatus status;
 	
+	private int crcCode;
+	
 	private CharacterCounterMessage(MessageStatus ms){
 		status = ms;
 	}
@@ -45,6 +47,14 @@ public class CharacterCounterMessage {
 		}
 		
 		return text;
+	}
+
+	public int getCrcCode() {
+		return crcCode;
+	}
+
+	public void setCrcCode(int crcCode) {
+		this.crcCode = crcCode;
 	}
 	
 	
