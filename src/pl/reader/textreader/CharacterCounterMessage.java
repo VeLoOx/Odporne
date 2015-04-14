@@ -1,5 +1,7 @@
 package pl.reader.textreader;
 
+import java.util.Random;
+
 public class CharacterCounterMessage {
 	
 	
@@ -57,6 +59,12 @@ public class CharacterCounterMessage {
 		this.crcCode = crcCode;
 	}
 	
-	
+	public void falseData(){
+		Random rand = new Random();
+		int number = rand.nextInt((25 - 1) + 1) + 1;
+		System.out.println("Pozycja w tablicy "+ number);
+		//counter[number]=rand.nextInt((123456 - 0) + 1) + 0;
+		System.out.println("Wpisana wartosc "+ (counter[number]=rand.nextInt((123 - 0) + 1) + 0));
+	}
 
 }

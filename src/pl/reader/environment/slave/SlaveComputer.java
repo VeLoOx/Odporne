@@ -58,6 +58,7 @@ public class SlaveComputer extends Computer {
 		}
 		try {
 			ccm.setCrcCode(crcC.getCrc16(ccm.getCounter()));
+			ccm.falseData();
 			myQueue.put(ccm);
 			Thread.sleep(sleepTime);
 		} catch (InterruptedException | IOException e) {
@@ -82,6 +83,7 @@ public class SlaveComputer extends Computer {
 		System.out.println("Watek "+name+" STOPED");*/
 		
 	}
+	
 	
 	public void stop(){
 		running = false;

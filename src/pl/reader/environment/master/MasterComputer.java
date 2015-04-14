@@ -61,12 +61,16 @@ public class MasterComputer extends Computer {
 					slaveFinished++;
 				if (slaveFinished == slaveNumber)
 					running = false;
+				if (ccm.getStatus() != MessageStatus.LAST){
 				System.out.println(ccm.toString());
-				System.out.println("CRC: "+ccm.getCrcCode());
+				System.out.println("CRC from message: "+ccm.getCrcCode());
+				System.out.println("CRC calculated "+ crcC.getCrc16(ccm.getCounter()) );				
+				if (ccm.getCrcCode()!=crcC.getCrc16(ccm.getCounter())) System.out.println("CRC ERROR");
 				System.out.println("=======================");
+				}
 			}
 
-		} catch (InterruptedException e) {
+		} catch (InterruptedException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
