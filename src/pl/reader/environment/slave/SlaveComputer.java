@@ -26,11 +26,7 @@ public class SlaveComputer extends Computer {
 		// TODO Auto-generated constructor stub
 	}
 
-	public SlaveComputer(BlockingQueue queue) {
-		super(queue);
-		type="SlaveComputer";
-		// TODO Auto-generated constructor stub
-	}
+	
 	
 	public void init(){
 		textReader = new TextReader(textFile);
@@ -58,7 +54,8 @@ public class SlaveComputer extends Computer {
 		}
 		try {
 			ccm.setCrcCode(crcC.getCrc16(ccm.getCounter()));
-			ccm.falseData();
+			ccm.setText(this.getName());
+			//ccm.falseData();
 			myQueue.put(ccm);
 			Thread.sleep(sleepTime);
 		} catch (InterruptedException | IOException e) {

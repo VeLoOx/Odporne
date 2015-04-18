@@ -13,12 +13,12 @@ public abstract class Computer implements Runnable {
 	
 	protected BlockingQueue<CharacterCounterMessage> myQueue;
 	
-	public Computer(BlockingQueue queue){
-		myQueue = queue;
+	public Computer(){
+		
 		type="Computer";
 	}
 	public Computer(BlockingQueue queue, String n){
-		this(queue);
+		myQueue = queue;
 		name = n;
 	}
 	

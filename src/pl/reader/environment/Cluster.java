@@ -18,7 +18,7 @@ public class Cluster {
 	private Computer masterC;
 	private Computer[] slavesC;
 	
-	private BlockingQueue<CharacterCounterMessage> messageQueue;
+	private BlockingQueue<CharacterCounterMessage>[] messageQueue;
 	
 	public Cluster(){
 		this(4);
@@ -26,7 +26,7 @@ public class Cluster {
 	
 	public Cluster(int slaveNuber){
 		this.slaveNumber = slaveNuber;
-		messageQueue = new ArrayBlockingQueue<>(2048);
+		messageQueue = new ArrayBlockingQueue[slaveNumber];
 		slavesThreads = new Thread[slaveNumber];
 		slavesC = new SlaveComputer[slaveNumber];
 		
@@ -35,8 +35,10 @@ public class Cluster {
 		
 		//initialization slaves
 		for(int i=0;i<slaveNumber;i++){
-			slavesC[i] = new SlaveComputer(messageQueue, "SLAVE_COMPUTER No. "+i);
+			messageQueue[i] = new ArrayBlockingQueue<>(1024); 
+			slavesC[i] = new SlaveComputer(messageQueue[i], "SLAVE_COMPUTER No. "+i);
 			slavesThreads[i] = new Thread(slavesC[i]);
+			
 		}
 		
 	}

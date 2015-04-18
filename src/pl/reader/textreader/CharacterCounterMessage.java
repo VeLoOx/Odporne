@@ -9,6 +9,8 @@ public class CharacterCounterMessage {
 	
 	private MessageStatus status;
 	
+	private String text;
+	
 	private int crcCode;
 	
 	private CharacterCounterMessage(MessageStatus ms){
@@ -40,8 +42,17 @@ public class CharacterCounterMessage {
 		return status;
 	}
 
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	public String toString(){
 		String text="";
+		text+="Message from" +this.text+" -- \n";
 		for(int i=0;i<counter.length;i++){
 			int c = 'a'+i;
 			if(counter[i]<=0) continue;
