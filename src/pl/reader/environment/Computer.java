@@ -22,7 +22,9 @@ public abstract class Computer implements Runnable {
 		name = n;
 	}
 	
+	
 	public abstract void init();
+	public abstract void stop();
 	public void init(File f){
 		
 	};
@@ -31,6 +33,7 @@ public abstract class Computer implements Runnable {
 		return name;
 	}
 	public String getType() {
+		
 		return type;
 	}
 	public BlockingQueue<CharacterCounterMessage> getMyQueue() {

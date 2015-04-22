@@ -38,6 +38,7 @@ public class Cluster {
 			messageQueue[i] = new ArrayBlockingQueue<>(1024); 
 			slavesC[i] = new SlaveComputer(messageQueue[i], "SLAVE_COMPUTER No. "+i);
 			slavesThreads[i] = new Thread(slavesC[i]);
+			//slavesThreads[i].suspend();
 			
 		}
 		
@@ -56,8 +57,41 @@ public class Cluster {
 		}
 	}
 	
+	public void pauseComputers(){
+		masterThread.suspend();
+		for(int i=0;i<slaveNumber;i++){
+			slavesThreads[i].suspend();
+		}
+	}
+	
+	public void resumeComputers(){
+		masterThread.resume();
+		for(int i=0;i<slaveNumber;i++){
+			slavesThreads[i].resume();
+		}
+	}
+	
+	public void stopComputers(){
+		try {
+			masterC.stop();
+			masterThread.join();
+			for(int i=0;i<slaveNumber;i++){
+				slavesC[i].stop();
+				slavesThreads[i].join();
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	//private
 	
+	public Computer getMasterC() {
+		return masterC;
+	}
+
 	public static void main(String[] args){
 		File [] files = new File[4];
 		File f = new File("D:\\tmp1.txt");

@@ -3,6 +3,7 @@ package pl.reader.environment.master;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
+import pl.reader.control.IControler;
 import pl.reader.environment.Computer;
 import pl.reader.textreader.CharacterCounterMessage;
 import pl.reader.textreader.MessageStatus;
@@ -18,6 +19,8 @@ public class MasterComputer extends Computer {
 	//int[] data1={5};
 	//int crcTest;
 
+	private IControler IC;
+	
 	public MasterComputer() {
 		super();
 		type = "MasterComputer";
@@ -84,6 +87,7 @@ public class MasterComputer extends Computer {
 				System.out.println("Round: Most importance Char "+sign.charAt(sign.length()-1)+": "+tab[1]+" times - Voting status: "+tab[2]);
 				System.out.println("************************=======================");
 				System.out.println("************************=======================");
+				
 			}
 
 		} catch (InterruptedException | IOException e) {
@@ -134,6 +138,10 @@ public class MasterComputer extends Computer {
 		return ret;
 		
 	}
+	
+	public void stop(){
+		running = false;
+	}
 
 	public int getSlaveNumber() {
 		return slaveNumber;
@@ -141,6 +149,10 @@ public class MasterComputer extends Computer {
 
 	public void setSlaveNumber(int slaveNumber) {
 		this.slaveNumber = slaveNumber;
+	}
+
+	public void setIC(IControler iC) {
+		IC = iC;
 	}
 
 	/*
