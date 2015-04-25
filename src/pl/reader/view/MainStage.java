@@ -187,7 +187,7 @@ private Controler controler;
 	            public void handle(ActionEvent event) {
 	               controler.pauseAll();
 	               pauseButton.setDisable(true);
-	               resumeButton.setDefaultButton(false);
+	               resumeButton.setDisable(false);
 	            }
 	        });
 		 resumeButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -221,6 +221,7 @@ private Controler controler;
 	}
 	
 	public void shuffleAnimation(){
+		if(controler.checkAnimRound()){
 		OFFSETX+=128;
 		if(OFFSETX>384)OFFSETX=0;
 		
@@ -228,13 +229,18 @@ private Controler controler;
 		for(int i=0;i<SLAVENUMBER;i++){
 			slaveImg[i].setViewport(new Rectangle2D(OFFSETX, 0, 128, 128));
 		}
+		}
 		
+	}
+	
+	public void consoleActualisation(){
+		consoleArea.setText(controler.getOUT());
 	}
 	
 	protected final void buildAndSetGameLoop() {
 
 		final Duration oneFrameAmt = Duration
-				.millis(1000 / 3);
+				.millis(1000 / 15);
 
 		final KeyFrame oneFrame = new KeyFrame(oneFrameAmt,
 
@@ -243,7 +249,7 @@ private Controler controler;
 			@Override
 			public void handle(javafx.event.Event event) {
 				shuffleAnimation();
-				
+				consoleActualisation();
 				
 			}
 

@@ -87,7 +87,8 @@ public class MasterComputer extends Computer {
 				System.out.println("Round: Most importance Char "+sign.charAt(sign.length()-1)+": "+tab[1]+" times - Voting status: "+tab[2]);
 				System.out.println("************************=======================");
 				System.out.println("************************=======================");
-				
+				IC.inform();
+				IC.addToOUT("Transmision !");
 			}
 
 		} catch (InterruptedException | IOException e) {

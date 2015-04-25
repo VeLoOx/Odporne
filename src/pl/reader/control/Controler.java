@@ -10,6 +10,10 @@ public class Controler implements IControler {
 	
 	private Cluster cluster;
 	private MainStage ms;
+	private long round; //runda = zrobienie glosowania
+	private long lastRound; //ostania runda animacji;
+	private String out = "";
+	private String lastOutMessage;
 	
 	public Controler(){};
 	public Controler(MainStage m){
@@ -44,7 +48,26 @@ public class Controler implements IControler {
 	@Override
 	public void inform() {
 		// TODO Auto-generated method stub
-		ms.shuffleAnimation();
+		round++;
+		//ms.shuffleAnimation();
+	}
+	public boolean checkAnimRound(){
+		if (lastRound!=round) {
+			lastRound=round;
+			return true;
+		} else return false;
+	}
+	
+	public void addToOUT(String n){
+		out+=n;
+		lastOutMessage=n;
+	}
+	public String getOUT(){
+		return out;
+	}
+	public String getLastOutMessage(){
+		
+		return lastOutMessage;
 	}
 
 }
