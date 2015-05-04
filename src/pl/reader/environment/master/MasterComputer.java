@@ -16,6 +16,8 @@ public class MasterComputer extends Computer {
 	private CrcClient crcC= new CrcClient();
 	private BlockingQueue<CharacterCounterMessage>[] queues;
 	private CharacterCounterMessage[] ccmr; //
+	//private int maybeStoped=0;
+	private boolean[] maybeStoped = new boolean[4];
 	//int[] data1={5};
 	//int crcTest;
 
@@ -50,7 +52,7 @@ public class MasterComputer extends Computer {
 	public void run() {
 		System.out.println(name + " started");
 		int slaveFinished = 0;
-		
+		int round=0;
 /*		try {
 			crcTest=crcC.getCrc16(data1);
 		} catch (IOException e1) {
@@ -62,33 +64,55 @@ public class MasterComputer extends Computer {
 		try {
 
 			while (running) {
+			
 				Thread.sleep(sleepTime);
-				
+				String s = "";
 				for (int i=0;i<slaveNumber;i++){
 				
-				
+				if(queues[i].isEmpty()){
+					ccmr[i] = CharacterCounterMessage.createEmptyMessage();
+					maybeStoped[i]=true;
+				} else {
 				ccmr[i] = queues[i].take();
-				if (ccmr[i].getStatus() == MessageStatus.LAST)
+				}
+				if (ccmr[i].getStatus() == MessageStatus.LAST){
 					slaveFinished++;
+				    maybeStoped[i]=true;}
 				if (slaveFinished == slaveNumber)
 					running = false;
 				if (ccmr[i].getStatus() != MessageStatus.LAST){
+					
+					if(ccmr[i].getStatus()==MessageStatus.EMPTY){
+						s+="Slave no "+i+" not connected\n";
+					} else {
 				System.out.println(ccmr[i].toString());
+				
 				System.out.println("CRC from message: "+ccmr[i].getCrcCode());
 				System.out.println("CRC calculated "+ crcC.getCrc16(ccmr[i].getCounter()) );				
 				if (ccmr[i].getCrcCode()!=crcC.getCrc16(ccmr[i].getCounter())) System.out.println("CRC ERROR");
 				System.out.println("=======================");
 				System.out.println("=======================");
+				s+=ccmr[i].toString()+" - CRC from message: "+ccmr[i].getCrcCode()+" - CRC calculated "+ crcC.getCrc16(ccmr[i].getCounter())+"\n";
+					}
 				}
 				}
 				
+				round++;
 				int[] tab = majorityVoting(ccmr);
 				String sign = Character.getName(('a'+tab[0]));
-				System.out.println("Round: Most importance Char "+sign.charAt(sign.length()-1)+": "+tab[1]+" times - Voting status: "+tab[2]);
+				System.out.println("Round:"+round+" Most importance Char "+sign.charAt(sign.length()-1)+": "+tab[1]+" times - Voting status: "+tab[2]);
 				System.out.println("************************=======================");
 				System.out.println("************************=======================");
 				IC.inform();
-				IC.addToOUT("Transmision !");
+				s+="Round:"+round+" Most importance Char "+sign.charAt(sign.length()-1)+": "+tab[1]+" times - Voting status: "+tab[2]+"\n";
+				s+="==============================\n";
+				boolean add=true;
+				int sss=0;
+				for(int ss=0;ss<slaveNumber;ss++){
+					if(maybeStoped[ss]) sss++;
+				}
+				if(sss!=slaveNumber)
+				IC.addToOUT(s);
 			}
 
 		} catch (InterruptedException | IOException e) {
@@ -103,6 +127,7 @@ public class MasterComputer extends Computer {
 	private CharacterCounterMessage sumCharactersTable(CharacterCounterMessage[] m){
 		CharacterCounterMessage tab = CharacterCounterMessage.createPartMessage();
 		for(int i=0;i<m.length;i++){
+			if(m[i].getStatus()==MessageStatus.EMPTY) continue;
 			for(int y=0;y<tab.getCounter().length;y++){
 				tab.getCounter()[y] += m[i].getCounter()[y];
 			}
@@ -121,6 +146,7 @@ public class MasterComputer extends Computer {
 		CharacterCounterMessage sumMessages = sumCharactersTable(m);
 		
 		for(int i=0;i<sumMessages.getCounter().length;i++){
+			
 			fullImportance+=sumMessages.getCounter()[i];
 			if(biggestImportance<sumMessages.getCounter()[i]){
 				biggestImportance=sumMessages.getCounter()[i];

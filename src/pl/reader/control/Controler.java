@@ -13,7 +13,7 @@ public class Controler implements IControler {
 	private long round; //runda = zrobienie glosowania
 	private long lastRound; //ostania runda animacji;
 	private String out = "";
-	private String lastOutMessage;
+	private String lastOutMessage="";
 	
 	public Controler(){};
 	public Controler(MainStage m){
@@ -45,6 +45,9 @@ public class Controler implements IControler {
 	public void stopAll(){
 		cluster.stopComputers();
 	}
+	public void pause(int i){
+		cluster.pauseSlave(i);
+	}
 	@Override
 	public void inform() {
 		// TODO Auto-generated method stub
@@ -68,6 +71,11 @@ public class Controler implements IControler {
 	public String getLastOutMessage(){
 		
 		return lastOutMessage;
+	}
+	
+	public int getActiveSlave(){
+		if(cluster==null) return 0;
+		return cluster.getActiveSlave();
 	}
 
 }

@@ -16,6 +16,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -46,20 +47,29 @@ private Controler controler;
 	private Button animButton = new Button("CLICKANIMATION");
 	
 	private TextArea consoleArea = new TextArea();
+	private Label activeSlave = new Label();
 	
 	
 	private BorderPane centerBorderPane;
-	private VBox leftCompVBox, rightCompVBox;
+	private HBox leftCompVBox, rightCompVBox;
 	private HBox topCompHBox, bottomCompHBox;
 	private HBox centerMasterCompHBox;
 	
-	private ImageView[] slaveImg = new ImageView[4];
+	private VBox[] slaveButtonBox = new VBox[SLAVENUMBER];
+	private Button[] stopSlaveNoButton = new Button[SLAVENUMBER];
+	private Button[] faultSlaveNoButton = new Button[SLAVENUMBER];
+	
+	private ImageView[] slaveImg = new ImageView[SLAVENUMBER];
 	private ImageView masterImg;
 	private int OFFSETX=0;
 	
 	private Group[] slaveImgBook;
-	
+	private static boolean[] activeAnimSlave = new boolean[4];
 	private static Timeline gameLoop;
+	
+	private int actualSlaveNo = 0;
+	
+	private boolean stoped = false;
 	
 	private URL toURL(String path){
 		String dirPath = new File("").getAbsolutePath();
@@ -76,6 +86,9 @@ private Controler controler;
 		
 		return u;
 	}
+	private int przelotka(){
+		return actualSlaveNo;
+	}
 	
 	public void myinit(){
 		controler = new Controler(this);
@@ -87,9 +100,30 @@ private Controler controler;
 			//rec[i] = new Rectangle(50,50,javafx.scene.paint.Color.RED); 
 			Image img = new Image(tmpu.toExternalForm(),512,128,false,false);
 			if(img==null) System.out.println("NULLLLLLL");
+			actualSlaveNo=i;
 			slaveImg[i] = new ImageView(img);
 			slaveImg[i].setViewport(new Rectangle2D(0, 0, 128, 128));
+			slaveButtonBox[i] = new VBox();
 			
+			stopSlaveNoButton[i] = new Button("S");
+			stopSlaveNoButton[i].setMaxSize(10, 10);
+			stopSlaveNoButton[i].setOnAction(new EventHandler<ActionEvent>() {
+				int my = przelotka();
+	            @Override
+	            public void handle(ActionEvent event) {
+	              controler.pause(my);
+	              MainStage.pauseAnim(my);
+	            }
+	        });
+			//stopSlaveNoButton[i].setAlignment(Pos.CENTER_RIGHT);
+			faultSlaveNoButton[i] = new Button("F");
+			faultSlaveNoButton[i].setMaxSize(10, 10);
+			//faultSlaveNoButton[i].setAlignment(Pos.CENTER);
+			
+			
+			((VBox)slaveButtonBox[i]).getChildren().add(stopSlaveNoButton[i]);
+			((VBox)slaveButtonBox[i]).getChildren().add(faultSlaveNoButton[i]);
+			slaveButtonBox[i].setAlignment(Pos.CENTER);
 		}
 		
 		dir = "";
@@ -104,21 +138,23 @@ private Controler controler;
 		
 		centerBorderPane = new BorderPane();
 		
-		leftCompVBox = new VBox();
+		leftCompVBox = new HBox();
 		leftCompVBox.setSpacing(BOXSPACING);
 		leftCompVBox.setPadding(new Insets(15, 12, 15, 12));
 		leftCompVBox.setStyle("-fx-background-color: #AAFFFF;");
 		leftCompVBox.setAlignment(Pos.CENTER);
 		leftCompVBox.getChildren().add(slaveImg[0]);
+		leftCompVBox.getChildren().add(slaveButtonBox[0]);
 		
 		 
 		
-		rightCompVBox = new VBox();
+		rightCompVBox = new HBox();
 		rightCompVBox.setSpacing(BOXSPACING);
 		rightCompVBox.setPadding(new Insets(15, 12, 15, 12));
 		rightCompVBox.setStyle("-fx-background-color: #AAFFFF;");
 		rightCompVBox.setAlignment(Pos.CENTER);
 		rightCompVBox.getChildren().add(slaveImg[2]);
+		rightCompVBox.getChildren().add(slaveButtonBox[2]);
 		
 		topCompHBox = new HBox();
 		topCompHBox.setSpacing(BOXSPACING);
@@ -126,6 +162,7 @@ private Controler controler;
 		topCompHBox.setStyle("-fx-background-color: #AAFFFF;");
 		topCompHBox.setAlignment(Pos.CENTER);
 		topCompHBox.getChildren().add(slaveImg[1]);
+		topCompHBox.getChildren().add(slaveButtonBox[1]);
 		
 		bottomCompHBox = new HBox();
 		bottomCompHBox.setSpacing(BOXSPACING);
@@ -133,6 +170,7 @@ private Controler controler;
 		bottomCompHBox.setStyle("-fx-background-color: #AAFFFF;");
 		bottomCompHBox.setAlignment(Pos.CENTER);
 		bottomCompHBox.getChildren().add(slaveImg[3]);
+		bottomCompHBox.getChildren().add(slaveButtonBox[3]);
 		
 		Rectangle masterRec =  new Rectangle(100,100,javafx.scene.paint.Color.GREEN); 
 		centerMasterCompHBox = new HBox();
@@ -158,12 +196,14 @@ private Controler controler;
 		topMenu.getChildren().add(pauseButton);
 		topMenu.getChildren().add(resumeButton);
 		topMenu.getChildren().add(animButton);
+		topMenu.getChildren().add(activeSlave);
 		stopButton.setDisable(true);
 		pauseButton.setDisable(true);
 		resumeButton.setDisable(true);
 		 startButton.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
+	            	stoped=false;
 	               controler.init();
 	               controler.start();
 	               startButton.setDisable(true);
@@ -174,6 +214,7 @@ private Controler controler;
 		 stopButton.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
+	            	stoped=true;
 	               controler.stopAll();
 	               startButton.setDisable(false);
 	               stopButton.setDisable(true);
@@ -185,6 +226,7 @@ private Controler controler;
 		 pauseButton.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
+	            	stoped=true;
 	               controler.pauseAll();
 	               pauseButton.setDisable(true);
 	               resumeButton.setDisable(false);
@@ -193,6 +235,7 @@ private Controler controler;
 		 resumeButton.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
+	            	stoped=false;
 	               controler.resumeAll();
 	               pauseButton.setDisable(false);
 	            }
@@ -209,6 +252,7 @@ private Controler controler;
 		console.setSpacing(20);
 		console.setPadding(new Insets(15, 12, 15, 12));
 		consoleArea.setText("Console Text");
+		consoleArea.setPrefRowCount(100);
 		console.getChildren().add(consoleArea);
 		
 		borderPane.setTop(topMenu);
@@ -227,6 +271,7 @@ private Controler controler;
 		
 		masterImg.setViewport(new Rectangle2D(OFFSETX, 0, 128, 128));
 		for(int i=0;i<SLAVENUMBER;i++){
+			if(activeAnimSlave[i]) continue;
 			slaveImg[i].setViewport(new Rectangle2D(OFFSETX, 0, 128, 128));
 		}
 		}
@@ -234,7 +279,10 @@ private Controler controler;
 	}
 	
 	public void consoleActualisation(){
+if(stoped) return;
 		consoleArea.setText(controler.getOUT());
+		consoleArea.setScrollTop(Double.MAX_VALUE);
+		activeSlave.setText(Integer.toString(controler.getActiveSlave()));
 	}
 	
 	protected final void buildAndSetGameLoop() {
@@ -248,6 +296,7 @@ private Controler controler;
 
 			@Override
 			public void handle(javafx.event.Event event) {
+				
 				shuffleAnimation();
 				consoleActualisation();
 				
@@ -289,4 +338,10 @@ private Controler controler;
 	public void setMasterImg(ImageView masterImg) {
 		this.masterImg = masterImg;
 	}
+	
+	private static void pauseAnim(int i){
+		activeAnimSlave[i]=true;
+	}
+	
+	
 }

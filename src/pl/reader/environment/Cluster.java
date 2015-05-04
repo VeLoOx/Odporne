@@ -18,6 +18,8 @@ public class Cluster {
 	private Computer masterC;
 	private Computer[] slavesC;
 	
+	private int activeSlave=0;
+	
 	private BlockingQueue<CharacterCounterMessage>[] messageQueue;
 	
 	public Cluster(){
@@ -47,6 +49,7 @@ public class Cluster {
 	public void initSlaves(File...f){
 		for(int i=0;i<slaveNumber;i++){
 			slavesC[i].init(f[i]);
+			
 		}
 	}
 	
@@ -54,6 +57,7 @@ public class Cluster {
 		masterThread.start();
 		for(int i=0;i<slaveNumber;i++){
 			slavesThreads[i].start();
+			activeSlave++;
 		}
 	}
 	
@@ -61,13 +65,20 @@ public class Cluster {
 		masterThread.suspend();
 		for(int i=0;i<slaveNumber;i++){
 			slavesThreads[i].suspend();
-		}
+			activeSlave--;
+			}
+	}
+	
+	public void pauseSlave(int i){
+		slavesThreads[i].suspend();
+		activeSlave--;
 	}
 	
 	public void resumeComputers(){
 		masterThread.resume();
 		for(int i=0;i<slaveNumber;i++){
 			slavesThreads[i].resume();
+			activeSlave++;
 		}
 	}
 	
@@ -78,6 +89,7 @@ public class Cluster {
 			for(int i=0;i<slaveNumber;i++){
 				slavesC[i].stop();
 				slavesThreads[i].join();
+				activeSlave--;
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -90,6 +102,10 @@ public class Cluster {
 	
 	public Computer getMasterC() {
 		return masterC;
+	}
+	
+	public int getActiveSlave(){
+		return activeSlave;
 	}
 
 	public static void main(String[] args){
