@@ -102,5 +102,10 @@ public class Controler implements IControler {
 		cluster.setIC(this);
 		((MasterComputer)cluster.getMasterC()).setIC(this);
 	}
+	
+	public void falseCRC(int i)
+	{
+		cluster.falseCRC(i);
+	}
 
 }

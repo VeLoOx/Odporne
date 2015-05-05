@@ -18,8 +18,13 @@ public class SlaveComputer extends Computer {
 	private File textFile;
 	//private int loopCounter = 0;
 	private CrcClient crcC= new CrcClient();
+	private boolean falseData=false;
 	
 	
+	
+
+
+
 	public SlaveComputer(BlockingQueue queue, String n) {
 		super(queue, n);
 		type="SlaveComputer";
@@ -55,7 +60,10 @@ public class SlaveComputer extends Computer {
 		try {
 			ccm.setCrcCode(crcC.getCrc16(ccm.getCounter()));
 			ccm.setText(this.getName());
-			//ccm.falseData();
+			if(falseData){
+				ccm.falseData();
+			}
+			
 			myQueue.put(ccm);
 			Thread.sleep(sleepTime);
 		} catch (InterruptedException | IOException e) {
@@ -110,7 +118,15 @@ public class SlaveComputer extends Computer {
 		this.textFile = textFile;
 	}
 	
-	
+	public boolean isFalseData() {
+		return falseData;
+	}
+
+
+
+	public void setFalseData() {
+		falseData = !falseData;
+	}
 	
 	/*public int getLoopCounter(){
 		return loopCounter;

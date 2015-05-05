@@ -128,6 +128,10 @@ public class Cluster {
 		
 	}
 	
+	public void falseCRC(int i){
+		((SlaveComputer) slavesC[i]).setFalseData();
+	}
+	
 	//private
 	
 	public Computer getMasterC() {

@@ -159,8 +159,14 @@ private Controler controler;
 			faultSlaveNoButton[i].setMaxSize(35, 35);
 			faultSlaveNoButton[i].setMinSize(35, 35);
 			faultSlaveNoButton[i].setAlignment(Pos.CENTER);
-			
-			
+			faultSlaveNoButton[i].setOnAction(new EventHandler<ActionEvent>() {
+				int my = przelotka();
+	            @Override
+	            public void handle(ActionEvent event) {
+	              controler.falseCRC(my);
+	             
+	            }
+	        });
 			diri = "";
 			diri+="\\GFX\\errordef.jpg";
 			tmpu2 = toURL(diri);
