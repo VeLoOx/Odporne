@@ -17,6 +17,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,6 +49,7 @@ private Controler controler;
 	private Button animButton = new Button("CLICKANIMATION");
 	
 	private TextArea consoleArea = new TextArea();
+	private TextArea consoleSimpleArea = new TextArea();
 	private Label activeSlave = new Label();
 	
 	
@@ -57,7 +60,15 @@ private Controler controler;
 	
 	private VBox[] slaveButtonBox = new VBox[SLAVENUMBER];
 	private Button[] stopSlaveNoButton = new Button[SLAVENUMBER];
+	private Button[] startSlaveNoButton = new Button[SLAVENUMBER];
 	private Button[] faultSlaveNoButton = new Button[SLAVENUMBER];
+	private Button[] faultuserSlaveNoButton = new Button[SLAVENUMBER];
+	
+	TabPane panel = new TabPane();
+	Tab tab1 = new Tab("All");
+	Tab tab2 = new Tab("Last Round");
+	
+	
 	
 	private ImageView[] slaveImg = new ImageView[SLAVENUMBER];
 	private ImageView masterImg;
@@ -92,7 +103,7 @@ private Controler controler;
 	
 	public void myinit(){
 		controler = new Controler(this);
-		
+		controler.init();
 		String dir = "";
 		dir+="\\GFX\\slave.png";
 		URL tmpu = toURL(dir);
@@ -105,8 +116,14 @@ private Controler controler;
 			slaveImg[i].setViewport(new Rectangle2D(0, 0, 128, 128));
 			slaveButtonBox[i] = new VBox();
 			
-			stopSlaveNoButton[i] = new Button("S");
-			stopSlaveNoButton[i].setMaxSize(10, 10);
+			String diri = "";
+			diri+="\\GFX\\stop.jpg";
+			URL tmpu2 = toURL(diri);
+			Image img2 = new Image(tmpu2.toExternalForm(),29,29,false,false);
+			stopSlaveNoButton[i] = new Button();
+			stopSlaveNoButton[i].setGraphic(new ImageView(img2));
+			stopSlaveNoButton[i].setMaxSize(35, 35);
+			stopSlaveNoButton[i].setMinSize(35, 35);
 			stopSlaveNoButton[i].setOnAction(new EventHandler<ActionEvent>() {
 				int my = przelotka();
 	            @Override
@@ -115,14 +132,50 @@ private Controler controler;
 	              MainStage.pauseAnim(my);
 	            }
 	        });
+			
+			diri = "";
+			diri+="\\GFX\\start.jpg";
+			tmpu2 = toURL(diri);
+			img2 = new Image(tmpu2.toExternalForm(),29,29,false,false);
+			startSlaveNoButton[i] = new Button();
+			startSlaveNoButton[i].setGraphic(new ImageView(img2));
+			startSlaveNoButton[i].setMaxSize(35, 35);
+			startSlaveNoButton[i].setMinSize(35, 35);
+			startSlaveNoButton[i].setOnAction(new EventHandler<ActionEvent>() {
+				int my = przelotka();
+	            @Override
+	            public void handle(ActionEvent event) {
+	              controler.resume(my);
+	              MainStage.pauseAnim(my);
+	            }
+	        });
 			//stopSlaveNoButton[i].setAlignment(Pos.CENTER_RIGHT);
-			faultSlaveNoButton[i] = new Button("F");
-			faultSlaveNoButton[i].setMaxSize(10, 10);
-			//faultSlaveNoButton[i].setAlignment(Pos.CENTER);
+			diri = "";
+			diri+="\\GFX\\error.jpg";
+			tmpu2 = toURL(diri);
+			img2 = new Image(tmpu2.toExternalForm(),29,29,false,false);
+			faultSlaveNoButton[i] = new Button();
+			faultSlaveNoButton[i].setGraphic(new ImageView(img2));
+			faultSlaveNoButton[i].setMaxSize(35, 35);
+			faultSlaveNoButton[i].setMinSize(35, 35);
+			faultSlaveNoButton[i].setAlignment(Pos.CENTER);
+			
+			
+			diri = "";
+			diri+="\\GFX\\errordef.jpg";
+			tmpu2 = toURL(diri);
+			img2 = new Image(tmpu2.toExternalForm(),29,29,false,false);
+			faultuserSlaveNoButton[i] = new Button();
+			faultuserSlaveNoButton[i].setGraphic(new ImageView(img2));
+			faultuserSlaveNoButton[i].setMaxSize(35, 35);
+			faultuserSlaveNoButton[i].setMinSize(35, 35);
+			faultuserSlaveNoButton[i].setAlignment(Pos.CENTER);
 			
 			
 			((VBox)slaveButtonBox[i]).getChildren().add(stopSlaveNoButton[i]);
 			((VBox)slaveButtonBox[i]).getChildren().add(faultSlaveNoButton[i]);
+			((VBox)slaveButtonBox[i]).getChildren().add(faultuserSlaveNoButton[i]);
+			((VBox)slaveButtonBox[i]).getChildren().add(startSlaveNoButton[i]);
 			slaveButtonBox[i].setAlignment(Pos.CENTER);
 		}
 		
@@ -203,9 +256,11 @@ private Controler controler;
 		 startButton.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
-	            	stoped=false;
-	               controler.init();
+	               stoped=false;
+	              
 	               controler.start();
+	               consoleArea.clear();
+	               consoleSimpleArea.clear();
 	               startButton.setDisable(true);
 	               stopButton.setDisable(false);
 	               pauseButton.setDisable(false);
@@ -220,6 +275,8 @@ private Controler controler;
 	               stopButton.setDisable(true);
 	               pauseButton.setDisable(true);
 	               resumeButton.setDefaultButton(true);
+	               controler.reset();
+	              // controler = new Controler();
 	            }
 	        });
 		 
@@ -247,13 +304,21 @@ private Controler controler;
 	            }
 	        });
 		
+		 panel.getTabs().add(tab1);
+		 panel.getTabs().add(tab2);
 		
 		console = new VBox();
 		console.setSpacing(20);
 		console.setPadding(new Insets(15, 12, 15, 12));
 		consoleArea.setText("Console Text");
 		consoleArea.setPrefRowCount(100);
-		console.getChildren().add(consoleArea);
+		consoleSimpleArea.setText("Console Text");
+		consoleSimpleArea.setPrefRowCount(100);
+		tab1.setContent(consoleArea);
+		tab2.setContent(consoleSimpleArea);
+		tab1.setClosable(false);
+		tab2.setClosable(false);
+		console.getChildren().add(panel);
 		
 		borderPane.setTop(topMenu);
 		borderPane.setLeft(console);
@@ -278,9 +343,18 @@ private Controler controler;
 		
 	}
 	
+	public void resetAnimation(){
+		masterImg.setViewport(new Rectangle2D(0, 0, 128, 128));
+		for(int i=0;i<SLAVENUMBER;i++){
+			if(activeAnimSlave[i]) continue;
+			slaveImg[i].setViewport(new Rectangle2D(0, 0, 128, 128));
+		}
+	}
+	
 	public void consoleActualisation(){
 if(stoped) return;
 		consoleArea.setText(controler.getOUT());
+		consoleSimpleArea.setText(controler.getLastOutMessage());
 		consoleArea.setScrollTop(Double.MAX_VALUE);
 		activeSlave.setText(Integer.toString(controler.getActiveSlave()));
 	}
@@ -341,6 +415,9 @@ if(stoped) return;
 	
 	private static void pauseAnim(int i){
 		activeAnimSlave[i]=true;
+	}
+	private static void startAnim(int i){
+		activeAnimSlave[i]=false;
 	}
 	
 	

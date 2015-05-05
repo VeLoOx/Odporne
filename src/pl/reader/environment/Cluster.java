@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import pl.reader.control.IControler;
 import pl.reader.environment.master.MasterComputer;
 import pl.reader.environment.slave.SlaveComputer;
 import pl.reader.textreader.CharacterCounterMessage;
@@ -19,6 +20,7 @@ public class Cluster {
 	private Computer[] slavesC;
 	
 	private int activeSlave=0;
+	private IControler IC;
 	
 	private BlockingQueue<CharacterCounterMessage>[] messageQueue;
 	
@@ -54,42 +56,70 @@ public class Cluster {
 	}
 	
 	public void startComputers(){
+		//((MasterComputer)masterC).activeRunning();
+		
+		
 		masterThread.start();
+		
 		for(int i=0;i<slaveNumber;i++){
 			slavesThreads[i].start();
 			activeSlave++;
+			IC.getMaybeStoped()[i]=false;
 		}
 	}
 	
 	public void pauseComputers(){
 		masterThread.suspend();
 		for(int i=0;i<slaveNumber;i++){
+			if(IC.getMaybeStoped()[i]) continue;
 			slavesThreads[i].suspend();
 			activeSlave--;
+			IC.getMaybeStoped()[i]=true;
 			}
 	}
 	
 	public void pauseSlave(int i){
+		if(IC.getMaybeStoped()[i]) return;
 		slavesThreads[i].suspend();
 		activeSlave--;
+		IC.getMaybeStoped()[i]=true;
+	}
+	
+	public void resumeSlave(int i){
+		if(!IC.getMaybeStoped()[i]) return;
+		slavesThreads[i].resume();
+		activeSlave++;
+		IC.getMaybeStoped()[i]=false;
 	}
 	
 	public void resumeComputers(){
 		masterThread.resume();
 		for(int i=0;i<slaveNumber;i++){
+			if(IC.getMaybeStoped()[i]){
 			slavesThreads[i].resume();
 			activeSlave++;
+			IC.getMaybeStoped()[i]=false;
+			}
 		}
 	}
 	
 	public void stopComputers(){
 		try {
-			masterC.stop();
-			masterThread.join();
+			//masterThread.resume();
+			
+			//masterThread.destroy();
 			for(int i=0;i<slaveNumber;i++){
+				if(IC.getMaybeStoped()[i]){
+					slavesThreads[i].resume();
+					
+				}
 				slavesC[i].stop();
 				slavesThreads[i].join();
+				//slavesThreads[i].destroy();
 				activeSlave--;
+				IC.getMaybeStoped()[i]=true;
+				masterC.stop();
+				masterThread.join();
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -106,6 +136,9 @@ public class Cluster {
 	
 	public int getActiveSlave(){
 		return activeSlave;
+	}
+	public void setIC(IControler i){
+		IC=i;
 	}
 
 	public static void main(String[] args){

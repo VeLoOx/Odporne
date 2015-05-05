@@ -14,15 +14,19 @@ public class Controler implements IControler {
 	private long lastRound; //ostania runda animacji;
 	private String out = "";
 	private String lastOutMessage="";
+	private boolean[] maybeStoped = new boolean[4];
+	File [] files = new File[4];
+	File f;
 	
 	public Controler(){};
+	
 	public Controler(MainStage m){
 		ms=m;
 	}
 	
 	public void init(){
-		File [] files = new File[4];
-		File f = new File("D:\\tmp1.txt");
+	
+		f = new File("D:\\tmp1.txt");
 		files[0]=new File("D:\\tmp1.txt");
 		files[1]=new File("D:\\tmp2.txt");
 		files[2]=new File("D:\\tmp3.txt");
@@ -30,6 +34,7 @@ public class Controler implements IControler {
 		
 		cluster = new Cluster(4);
 		cluster.initSlaves(files);
+		cluster.setIC(this);
 		((MasterComputer)cluster.getMasterC()).setIC(this);
 	}
 	
@@ -47,6 +52,9 @@ public class Controler implements IControler {
 	}
 	public void pause(int i){
 		cluster.pauseSlave(i);
+	}
+	public void resume(int i){
+		cluster.resumeSlave(i);
 	}
 	@Override
 	public void inform() {
@@ -76,6 +84,23 @@ public class Controler implements IControler {
 	public int getActiveSlave(){
 		if(cluster==null) return 0;
 		return cluster.getActiveSlave();
+	}
+	@Override
+	public boolean[] getMaybeStoped() {
+		// TODO Auto-generated method stub
+		return maybeStoped;
+	}
+	
+	public void reset(){
+		f = new File("D:\\tmp1.txt");
+		files[0]=new File("D:\\tmp1.txt");
+		files[1]=new File("D:\\tmp2.txt");
+		files[2]=new File("D:\\tmp3.txt");
+		files[3]=new File("D:\\tmp4.txt");
+		cluster = new Cluster(4);
+		cluster.initSlaves(files);
+		cluster.setIC(this);
+		((MasterComputer)cluster.getMasterC()).setIC(this);
 	}
 
 }

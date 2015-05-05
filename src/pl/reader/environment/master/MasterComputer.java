@@ -16,8 +16,9 @@ public class MasterComputer extends Computer {
 	private CrcClient crcC= new CrcClient();
 	private BlockingQueue<CharacterCounterMessage>[] queues;
 	private CharacterCounterMessage[] ccmr; //
+	private boolean finished=false;
 	//private int maybeStoped=0;
-	private boolean[] maybeStoped = new boolean[4];
+	
 	//int[] data1={5};
 	//int crcTest;
 
@@ -71,13 +72,13 @@ public class MasterComputer extends Computer {
 				
 				if(queues[i].isEmpty()){
 					ccmr[i] = CharacterCounterMessage.createEmptyMessage();
-					maybeStoped[i]=true;
+					IC.getMaybeStoped()[i]=true;
 				} else {
 				ccmr[i] = queues[i].take();
 				}
 				if (ccmr[i].getStatus() == MessageStatus.LAST){
 					slaveFinished++;
-				    maybeStoped[i]=true;}
+					IC.getMaybeStoped()[i]=true;}
 				if (slaveFinished == slaveNumber)
 					running = false;
 				if (ccmr[i].getStatus() != MessageStatus.LAST){
@@ -106,13 +107,21 @@ public class MasterComputer extends Computer {
 				IC.inform();
 				s+="Round:"+round+" Most importance Char "+sign.charAt(sign.length()-1)+": "+tab[1]+" times - Voting status: "+tab[2]+"\n";
 				s+="==============================\n";
-				boolean add=true;
+				
 				int sss=0;
 				for(int ss=0;ss<slaveNumber;ss++){
-					if(maybeStoped[ss]) sss++;
+					if(IC.getMaybeStoped()[ss]) sss++;
 				}
-				if(sss!=slaveNumber)
+				
+				if((sss)!=slaveNumber){
 				IC.addToOUT(s);
+				
+				} else {
+					//running=false;
+					//ss=0;
+					
+				}
+				 
 			}
 
 		} catch (InterruptedException | IOException e) {
@@ -176,6 +185,10 @@ public class MasterComputer extends Computer {
 
 	public void setSlaveNumber(int slaveNumber) {
 		this.slaveNumber = slaveNumber;
+	}
+	
+	public void activeRunning(){
+		running=true;
 	}
 
 	public void setIC(IControler iC) {

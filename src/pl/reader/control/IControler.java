@@ -6,4 +6,5 @@ public interface IControler {
 	public void addToOUT(String n);
 	public String getOUT();
 	public String getLastOutMessage();
+	public boolean[] getMaybeStoped();
 }
