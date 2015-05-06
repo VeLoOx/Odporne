@@ -133,7 +133,7 @@ public class MasterComputer extends Computer {
 				s += "\n==============================\n";
 				s += "Round:" + round + " Most importance Char "
 						+ sign.charAt(sign.length() - 1) + ": " + tab[1]
-						+ " times - Voting status: " + tab[2] + "\n";
+						+ " times - Voting status: " + tab[2] + "\n"+" ALL = "+tab[3] +"  RESULT "+(double)tab[1]/(double)tab[3]+"\n";
 				s += "==============================\n";
 
 				int sss = 0;
@@ -193,14 +193,16 @@ public class MasterComputer extends Computer {
 			}
 		}
 
-		int[] ret = new int[3];
+		int[] ret = new int[4];
 
 		if (fullImportance <= 0)
 			return ret;
 
 		ret[0] = biggestImportanceIndex;
 		ret[1] = biggestImportance;
-		if (biggestImportance / fullImportance > 0.5)
+		ret[3] = fullImportance;
+		
+		if (((double)biggestImportance / (double)fullImportance) > 0.5)
 			ret[2] = 1;
 		else
 			ret[2] = 0; // 1 glosowanie udane, 0 w glosowaniu nie bylo zwyciezcy
