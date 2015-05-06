@@ -132,6 +132,10 @@ public class Cluster {
 		((SlaveComputer) slavesC[i]).setFalseData();
 	}
 	
+	public void makeSomeChaos(int i){
+		((SlaveComputer) slavesC[i]).setChaos();
+	}
+	
 	//private
 	
 	public Computer getMasterC() {

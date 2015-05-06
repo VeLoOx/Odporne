@@ -13,6 +13,7 @@ public class CharacterCounterMessage {
 	
 	private int crcCode;
 	
+	
 	private CharacterCounterMessage(MessageStatus ms){
 		status = ms;
 	}
@@ -77,5 +78,7 @@ public class CharacterCounterMessage {
 		//counter[number]=rand.nextInt((123456 - 0) + 1) + 0;
 		System.out.println("Wpisana wartosc "+ (counter[number]=rand.nextInt((123 - 0) + 1) + 0));
 	}
+	
+	
 
 }

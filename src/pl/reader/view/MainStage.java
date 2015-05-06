@@ -176,6 +176,14 @@ private Controler controler;
 			faultuserSlaveNoButton[i].setMaxSize(35, 35);
 			faultuserSlaveNoButton[i].setMinSize(35, 35);
 			faultuserSlaveNoButton[i].setAlignment(Pos.CENTER);
+			faultuserSlaveNoButton[i].setOnAction(new EventHandler<ActionEvent>() {
+				int my = przelotka();
+	            @Override
+	            public void handle(ActionEvent event) {
+	              controler.makeSomeChaos(my);
+	             
+	            }
+	        });
 			
 			
 			((VBox)slaveButtonBox[i]).getChildren().add(stopSlaveNoButton[i]);

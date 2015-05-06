@@ -107,5 +107,9 @@ public class Controler implements IControler {
 	{
 		cluster.falseCRC(i);
 	}
+	
+	public void makeSomeChaos(int i){
+		cluster.makeSomeChaos(i);
+	}
 
 }
