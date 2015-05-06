@@ -16,6 +16,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -46,12 +47,15 @@ private Controler controler;
 	private Button stopButton = new Button("STOP");
 	private Button pauseButton = new Button("PAUSE");
 	private Button resumeButton = new Button("RESUME");
-	private Button animButton = new Button("CLICKANIMATION");
 	
+	private Button animButton = new Button("NEXT STEP");
+	private CheckBox stepModeCKBox = new CheckBox();
 	private TextArea consoleArea = new TextArea();
 	private TextArea consoleSimpleArea = new TextArea();
 	private Label activeSlave = new Label();
-	
+	private boolean stepMode = false;
+	private int lastMode = 0;
+	private int actualMode = 0;
 	
 	private BorderPane centerBorderPane;
 	private HBox leftCompVBox, rightCompVBox;
@@ -262,11 +266,31 @@ private Controler controler;
 		topMenu.getChildren().add(stopButton);
 		topMenu.getChildren().add(pauseButton);
 		topMenu.getChildren().add(resumeButton);
+		Label stepLabel = new Label("Step MODE");
+		topMenu.getChildren().add(stepLabel);
+		stepModeCKBox.setSelected(false);
+		topMenu.getChildren().add(stepModeCKBox);
 		topMenu.getChildren().add(animButton);
+		Label activeSlaveLabel = new Label("Active SLAVE No");
 		topMenu.getChildren().add(activeSlave);
 		stopButton.setDisable(true);
 		pauseButton.setDisable(true);
 		resumeButton.setDisable(true);
+		animButton.setDisable(true);
+		stepModeCKBox.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	              if(stepModeCKBox.isSelected()){
+	            	  stepMode=true;
+	            	  animButton.setDisable(false);
+	              } else {
+	            	  stepMode=false;
+	            	  animButton.setDisable(true);
+	            	  controler.resumeAll();
+	              }
+	            }
+	        });
+		
 		 startButton.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
@@ -314,7 +338,8 @@ private Controler controler;
 		 animButton.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
-	              shuffleAnimation();
+	            	animButton.setDisable(true);
+	            	controler.resumeAll();
 	            }
 	        });
 		
@@ -357,6 +382,30 @@ private Controler controler;
 		
 	}
 	
+	public void shuffleManualAnimation(){
+		
+		OFFSETX+=128;
+		if(OFFSETX>384)OFFSETX=0;
+		
+		masterImg.setViewport(new Rectangle2D(OFFSETX, 0, 128, 128));
+		for(int i=0;i<SLAVENUMBER;i++){
+			if(activeAnimSlave[i]) continue;
+			slaveImg[i].setViewport(new Rectangle2D(OFFSETX, 0, 128, 128));
+		}
+		
+		
+	}
+	
+	public void nextStep(){
+		if(!stepMode) return;
+		if(controler.checkAnimRound()){
+			System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+			controler.pauseAll();
+			animButton.setDisable(false);
+			shuffleManualAnimation();
+		}
+	}
+	
 	public void resetAnimation(){
 		masterImg.setViewport(new Rectangle2D(0, 0, 128, 128));
 		for(int i=0;i<SLAVENUMBER;i++){
@@ -384,7 +433,7 @@ if(stoped) return;
 
 			@Override
 			public void handle(javafx.event.Event event) {
-				
+				nextStep();
 				shuffleAnimation();
 				consoleActualisation();
 				

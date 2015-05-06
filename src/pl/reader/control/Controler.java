@@ -14,6 +14,7 @@ public class Controler implements IControler {
 	private long lastRound; //ostania runda animacji;
 	private String out = "";
 	private String lastOutMessage="";
+	private boolean stepMode=false;
 	private boolean[] maybeStoped = new boolean[4];
 	File [] files = new File[4];
 	File f;
