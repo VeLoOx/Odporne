@@ -7,4 +7,6 @@ public interface IControler {
 	public String getOUT();
 	public String getLastOutMessage();
 	public boolean[] getMaybeStoped();
+	public boolean[] getStopedStep();
+	public boolean isStepMode();
 }

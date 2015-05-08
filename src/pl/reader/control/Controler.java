@@ -16,6 +16,7 @@ public class Controler implements IControler {
 	private String lastOutMessage="";
 	private boolean stepMode=false;
 	private boolean[] maybeStoped = new boolean[4];
+	private boolean[] stopedStep = new boolean[4];
 	File [] files = new File[4];
 	File f;
 	
@@ -91,6 +92,11 @@ public class Controler implements IControler {
 		// TODO Auto-generated method stub
 		return maybeStoped;
 	}
+	@Override
+	public boolean[] getStopedStep() {
+		// TODO Auto-generated method stub
+		return stopedStep;
+	}
 	
 	public void reset(){
 		f = new File("D:\\tmp1.txt");
@@ -111,6 +117,21 @@ public class Controler implements IControler {
 	
 	public void makeSomeChaos(int i){
 		cluster.makeSomeChaos(i);
+	}
+	
+	public boolean isStepMode(){
+		return stepMode;
+	}
+	public void setStepMode(boolean s){
+		stepMode = s;
+	}
+	public void clear(){
+		maybeStoped = new boolean[4];
+		stopedStep = new boolean[4];
+	}
+	
+	public void resumeMaster(){
+		cluster.resumeMaster();
 	}
 
 }

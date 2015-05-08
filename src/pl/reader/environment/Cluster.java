@@ -78,6 +78,10 @@ public class Cluster {
 			}
 	}
 	
+	/*public void pauseStepComputers(){
+		
+	}*/
+	
 	public void pauseSlave(int i){
 		if(IC.getMaybeStoped()[i]) return;
 		slavesThreads[i].suspend();
@@ -89,18 +93,46 @@ public class Cluster {
 		if(!IC.getMaybeStoped()[i]) return;
 		slavesThreads[i].resume();
 		activeSlave++;
+		
 		IC.getMaybeStoped()[i]=false;
 	}
 	
-	public void resumeComputers(){
+	/*public void resumeStepComputers(){
 		masterThread.resume();
 		for(int i=0;i<slaveNumber;i++){
+			if(IC.getMaybeStoped()[i]) continue;
+			slavesThreads[i].resume();
+			activeSlave++;
+			
+			}
+		
+	}*/
+	
+	public void resumeComputers(){
+		masterThread.resume();
+		System.out.println("RESUME ALL STEPMODE "+IC.isStepMode()+"\n");
+		for(int i=0;i<slaveNumber;i++){
+			
+			if(IC.isStepMode()){
+				
+				System.out.println("TRYB KROKOWY ON\n");
+				if(IC.getStopedStep()[i]){
+					IC.getMaybeStoped()[i]=true;
+					continue;
+				}
+			}	
+			
 			if(IC.getMaybeStoped()[i]){
+			
 			slavesThreads[i].resume();
 			activeSlave++;
 			IC.getMaybeStoped()[i]=false;
 			}
 		}
+	}
+	
+	public void resumeMaster(){
+		masterThread.resume();
 	}
 	
 	public void stopComputers(){

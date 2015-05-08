@@ -133,6 +133,10 @@ private Controler controler;
 	            @Override
 	            public void handle(ActionEvent event) {
 	              controler.pause(my);
+	              if(stepMode) {
+	            	  controler.getStopedStep()[my] = true;
+	            	  System.out.println("KOMP "+my+" TRYB KROKOWY STOP\n");
+	              }
 	              MainStage.pauseAnim(my);
 	            }
 	        });
@@ -150,7 +154,8 @@ private Controler controler;
 	            @Override
 	            public void handle(ActionEvent event) {
 	              controler.resume(my);
-	              MainStage.pauseAnim(my);
+	              if(stepMode) controler.getStopedStep()[my] = false;
+	              MainStage.startAnim(my);
 	            }
 	        });
 			//stopSlaveNoButton[i].setAlignment(Pos.CENTER_RIGHT);
@@ -282,11 +287,22 @@ private Controler controler;
 	            public void handle(ActionEvent event) {
 	              if(stepModeCKBox.isSelected()){
 	            	  stepMode=true;
+	            	  System.out.println("STEP MODE "+stepMode);
+	            	  controler.setStepMode(true);
 	            	  animButton.setDisable(false);
 	              } else {
 	            	  stepMode=false;
+	            	  controler.setStepMode(false);
 	            	  animButton.setDisable(true);
-	            	  controler.resumeAll();
+	            	  for(int i=0;i<SLAVENUMBER;i++){
+	            		  //controler.getMaybeStoped()[i] = controler.getStopedStep()[i];
+	            		  controler.resumeMaster();
+	            		  if(!controler.getStopedStep()[i]){
+	            			  controler.resume(i);
+	            		  }
+	            		  controler.getStopedStep()[i] = false;
+	            	  }
+	            	 
 	              }
 	            }
 	        });
@@ -295,7 +311,8 @@ private Controler controler;
 	            @Override
 	            public void handle(ActionEvent event) {
 	               stoped=false;
-	              
+	               controler.clear();
+	               controler.setStepMode(stepMode);
 	               controler.start();
 	               consoleArea.clear();
 	               consoleSimpleArea.clear();
