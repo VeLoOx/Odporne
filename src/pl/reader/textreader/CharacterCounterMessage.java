@@ -53,11 +53,11 @@ public class CharacterCounterMessage {
 
 	public String toString(){
 		String text="";
-		text+="Message from" +this.text+" -- \n";
+		text+="Message from" +this.text+" -- \r\n ";
 		for(int i=0;i<counter.length;i++){
 			int c = 'a'+i;
 			if(counter[i]<=0) continue;
-			text+="Character "+(char)c+" = "+counter[i]+"\n";
+			text+=" Character "+(char)c+" = "+counter[i]+" \r\n";
 		}
 		
 		return text;

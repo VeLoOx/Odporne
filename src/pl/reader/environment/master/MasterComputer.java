@@ -84,7 +84,7 @@ public class MasterComputer extends Computer {
 					if (ccmr[i].getStatus() != MessageStatus.LAST) {
 
 						if (ccmr[i].getStatus() == MessageStatus.EMPTY) {
-							s += "Slave no " + i + " not connected\n";
+							s += "Slave no " + i + " not connected\r\n";
 						} else if (ccmr[i].getCrcCode() != crcC
 								.getCrc16(ccmr[i].getCounter())) {
 							System.out.println("CRC ERROR");
@@ -93,9 +93,9 @@ public class MasterComputer extends Computer {
 							}*/
 							
 							s +="\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-							s += ccmr[i].getText()+"\n";
-							s += "CRC error, message rejected\n";
-							s +="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+							s += ccmr[i].getText()+"\r\n";
+							s += "CRC error, message rejected\r\n";
+							s +="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\r\n";
 							ccmr[i]=null;
 							continue;
 						} else {
@@ -114,7 +114,7 @@ public class MasterComputer extends Computer {
 									+ ccmr[i].getCrcCode()
 									+ " - CRC calculated "
 									+ crcC.getCrc16(ccmr[i].getCounter())
-									+ "\n";
+									+ "\r\n";
 						}
 					}
 				}
@@ -130,11 +130,11 @@ public class MasterComputer extends Computer {
 				System.out
 						.println("************************=======================");
 				IC.inform();
-				s += "\n==============================\n";
+				s += "\r\n==============================\r\n";
 				s += "Round:" + round + " Most importance Char "
 						+ sign.charAt(sign.length() - 1) + ": " + tab[1]
-						+ " times - Voting status: " + tab[2] + "\n"+" ALL = "+tab[3] +"  RESULT "+(double)tab[1]/(double)tab[3]+"\n";
-				s += "==============================\n";
+						+ " times - Voting status: " + tab[2] + "\n"+" ALL = "+tab[3] +"  RESULT "+(double)tab[1]/(double)tab[3]+"\r\n";
+				s += "==============================\r\n";
 
 				int sss = 0;
 				for (int ss = 0; ss < slaveNumber; ss++) {

@@ -32,6 +32,7 @@ public class MainWindow extends Application{
 		// TODO Auto-generated method stub
 		primaryStage.setTitle("SONB");
 		ms.myinit();
+		ms.setStage(primaryStage);
 		primaryStage.setScene(ms.getScene());
 		primaryStage.show();
 		

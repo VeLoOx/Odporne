@@ -137,7 +137,7 @@ public class Cluster {
 	
 	public void stopComputers(){
 		try {
-			//masterThread.resume();
+			masterThread.resume();
 			
 			//masterThread.destroy();
 			for(int i=0;i<slaveNumber;i++){
@@ -145,6 +145,11 @@ public class Cluster {
 					slavesThreads[i].resume();
 					
 				}
+				if(IC.getStopedStep()[i]){
+					slavesThreads[i].resume();
+					
+				}
+				
 				slavesC[i].stop();
 				slavesThreads[i].join();
 				//slavesThreads[i].destroy();

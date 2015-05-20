@@ -1,6 +1,9 @@
 package pl.reader.view;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -27,6 +30,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import pl.reader.control.Controler;
 
@@ -38,6 +44,8 @@ private Controler controler;
 	public final int WW = 1200;
 	public final int SLAVENUMBER = 4;
 	
+	Stage stage;
+	
 	private Scene scene;
 	private BorderPane borderPane;
 	
@@ -47,6 +55,7 @@ private Controler controler;
 	private Button stopButton = new Button("STOP");
 	private Button pauseButton = new Button("PAUSE");
 	private Button resumeButton = new Button("RESUME");
+	private Button saveButton = new Button("SAVE Log");
 	
 	private Button animButton = new Button("NEXT STEP");
 	private CheckBox stepModeCKBox = new CheckBox();
@@ -67,6 +76,8 @@ private Controler controler;
 	private Button[] startSlaveNoButton = new Button[SLAVENUMBER];
 	private Button[] faultSlaveNoButton = new Button[SLAVENUMBER];
 	private Button[] faultuserSlaveNoButton = new Button[SLAVENUMBER];
+	
+	private Button saveConsole = new Button("Save Console");
 	
 	TabPane panel = new TabPane();
 	Tab tab1 = new Tab("All");
@@ -276,8 +287,9 @@ private Controler controler;
 		stepModeCKBox.setSelected(false);
 		topMenu.getChildren().add(stepModeCKBox);
 		topMenu.getChildren().add(animButton);
+		topMenu.getChildren().add(saveButton);
 		Label activeSlaveLabel = new Label("Active SLAVE No");
-		topMenu.getChildren().add(activeSlave);
+		//topMenu.getChildren().add(activeSlave);
 		stopButton.setDisable(true);
 		pauseButton.setDisable(true);
 		resumeButton.setDisable(true);
@@ -321,6 +333,27 @@ private Controler controler;
 	               pauseButton.setDisable(false);
 	            }
 	        });
+		 saveButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				FileChooser fileChooser = new FileChooser();
+	            fileChooser.setTitle("Save Image");
+	            fileChooser.getExtensionFilters().add(new ExtensionFilter("TXT", "*.txt"));
+	            File file = fileChooser.showSaveDialog(stage);
+	            try {
+					FileOutputStream fso = new FileOutputStream(file);
+					PrintStream ps = new PrintStream(fso);
+					ps.print(controler.getOUT());
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            
+				
+			}
+		});
 		 stopButton.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
@@ -498,6 +531,10 @@ if(stoped) return;
 	}
 	private static void startAnim(int i){
 		activeAnimSlave[i]=false;
+	}
+	
+	public void setStage(Stage s){
+		stage=s;
 	}
 	
 	
